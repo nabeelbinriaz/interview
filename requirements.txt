@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-multipart
+langchain
+pypdf2
+temp
+requests
+ast
+json
+typing
