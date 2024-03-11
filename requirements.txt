@@ -6,3 +6,4 @@ pypdf2
 temp
 requests
 typing
+openai
