@@ -409,21 +409,20 @@ async def summarzie_audio_file(text: str = Form(...)):
     return output
 
 @app.post("/manual/")
-async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(...)):
+async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(...),history: str=Form(None)):
     ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}, Job Description: {job_description}"
     print(ci)
     print("API HITT.......")
-    with open("chat.txt", "rb") as files:
-        loaded_data = files.read().decode('utf-8')  # Decoding the binary data to string
+    # with open("chat.txt", "rb") as files:
+    #     loaded_data = files.read().decode('utf-8')  # Decoding the binary data to string
     try:
-        mes_dict = ast.literal_eval(loaded_data)
+        mes_dict = ast.literal_eval(history)
     except:
         mes_dict=[]
     print(mes_dict)
-
     messages=messages_from_dict(mes_dict)
     retrieved_chat_history = ChatMessageHistory(messages=messages)
-    template = "You are an interviewer, designed to interview the Human, based on the provided 'Candidate information'. You should ask technical questions related to the candidate's field one by one and based on the 'Chat History' and  predict what the next question should be . When the Human say 'hello', JUST respond with 'hello there, thankyou for taking your time for inteviewing with us, Please introduce yourself'\n Donot write anything else and then wait for Human answer"+f"\n\nCandidate Information:\n\n{ci}"+"\n\nChat History:\n\n{history}\n\nConversation:\nHuman: {input}\nAI:"
+    template = "You are an interviewer, designed to interview the Human, based on the provided 'Candidate information'. You should ask technical questions and create hypothetical scenarios to check for skills related to the candidate's field one by one and based on the 'Chat History' and  predict what the next question should be . When the Human say 'hello', JUST respond with 'hello there, thankyou for taking your time for inteviewing with us, Please introduce yourself'\n Donot write anything else and then wait for Human answer"+f"\n\nCandidate Information:\n\n{ci}"+"\n\nChat History:\n\n{history}\n\nConversation:\nHuman: {input}\nAI:"
     prompt = PromptTemplate(
         input_variables=["history","input"], template=template
     )
@@ -438,9 +437,9 @@ async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = 
         prompt=prompt
     )
     a=conversation.predict(input=text)
-    with open("chat.txt","w",encoding="utf-8") as ff:
-        ff.write(f"{messages_to_dict(conversation.memory.chat_memory.messages)}\n")
-    return a 
+    # with open("chat.txt","w",encoding="utf-8") as ff:
+    #     ff.write(f"{messages_to_dict(conversation.memory.chat_memory.messages)}\n")
+    return {"chat":a ,"history":str(messages_to_dict(conversation.memory.chat_memory.messages))}
 
 @app.post("/end/")
 async def endd():
@@ -448,15 +447,15 @@ async def endd():
         pass
 
 @app.post("/analysis/")
-async def analysiss():
-    with open("chat.txt","rb") as ff:
-        chat=ff.read().decode('utf-8')
+async def analysiss(history:str=Form(...)):
+    # with open("chat.txt","rb") as ff:
+    #     chat=ff.read().decode('utf-8')
 
     URL = "https://api.openai.com/v1/chat/completions"
 
     payload = {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role":"system","content":"You are an HR professional reviewing candidate based on the interview chat of the candidate with an AI model\n\n ALways give your answer in follwoing format\nOverallDecision: (0-100 score based on the interview performance)\n\nOverallSentiment:0-100.\nAreasOfStrength:\nAreasToImprove:"},{"role": "user", "content": f"Based on this chat:\n{chat}\n Give analysis"}],
+    "messages": [{"role":"system","content":"You are an HR professional reviewing candidate based on the interview chat of the candidate with an AI model\n\n ALways give your answer in follwoing format\nOverallDecision: (0-100 score based on the interview performance)\n\nOverallSentiment:0-100.\nAreasOfStrength:\nAreasToImprove:"},{"role": "user", "content": f"Based on this chat:\n{history}\n Give analysis"}],
     "temperature" : 0.1,
     "top_p":1.0,
     "n" : 1,
@@ -488,15 +487,15 @@ async def analysiss():
     return heading_content_dict
 
 @app.post("/criteria/")
-async def criteriaaa():
-    with open("chat.txt","rb") as ff:
-        chat=ff.read().decode('utf-8')
+async def criteriaaa(history:str=Form(...)):
+    # with open("chat.txt","rb") as ff:
+    #     chat=ff.read().decode('utf-8')
 
     URL = "https://api.openai.com/v1/chat/completions"
 
     payload = {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role":"system","content":"You are an HR professional who give scores reviewing candidate based on the interview chat of the candidate with an AI model\n\n ALways give your answer in follwoing format\nSelfIntroduction:0-100%\nTeamworkAndCollaboration:0-100%\nProblemSolvingSkills:0-100%\nAdaptibility:0-100%,\nCommunication:0-100%"},{"role": "user", "content": f"Based on this chat:\n{chat}\n Give analysis"}],
+    "messages": [{"role":"system","content":"You are an HR professional who give scores reviewing candidate based on the interview chat of the candidate with an AI model\n\n ALways give your answer in follwoing format\nSelfIntroduction:0-100%\nTeamworkAndCollaboration:0-100%\nProblemSolvingSkills:0-100%\nAdaptibility:0-100%,\nCommunication:0-100%"},{"role": "user", "content": f"Based on this chat:\n{history}\n Give analysis"}],
     "temperature" : 0.1,
     "top_p":1.0,
     "n" : 1,
