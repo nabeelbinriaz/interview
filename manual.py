@@ -107,7 +107,7 @@ def answer(ques, ans):
     '''
     payload = {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "user", "content": f"Analyze this question {ques}, analyze the answer of the user {ans}, and provide 4 feedback with proper feedback heading\n {res}"}],
+    "messages": [{"role":"system","content":f"You are a HR professional reviewing the answers of candidates on different interview questions. {res}"},{"role": "user", "content": f"Analyze this question {ques}, analyze the answer of the user {ans}, and provide 4 feedback with proper feedback heading"}],
     "temperature" : 1.0,
     "top_p":1.0,
     "n" : 1,
@@ -187,7 +187,7 @@ def criteria(ques, answer):
        '''
     payload = {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role":"system","content":"You are an HR professional who give scroes reviewing candidate based on the interview question and answer of candidate"},{"role": "user", "content": f"Question:{ques}\nAnswer{answer}\n {res}"}],
+    "messages": [{"role":"system","content":f"You are an HR professional who give scroes reviewing candidate based on the interview question and answer of candidate.{res}"},{"role": "user", "content": f"Question:{ques}\nAnswer{answer}"}],
     "temperature" : 0.1,
     "top_p":1.0,
     "n" : 1,
@@ -329,6 +329,7 @@ async def submit_answer(ques: list=Form(...), ans: list=Form(...)):
             raise HTTPException(status_code=400, detail=str(e))
     else:
         raise HTTPException(status_code=400, detail="Question and answer are required.")
+
     
 
 @app.post("/manual_input/")
