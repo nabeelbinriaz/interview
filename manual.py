@@ -101,9 +101,11 @@ def interview(extracted_info):
 
 def answer(ques, ans):
     URL = "https://api.openai.com/v1/chat/completions"
-    res =''' Your response should be in object type dictionary in the given format:
+    res =''' Your response should be in this format:
     1. Name of heading:\n description(Write the content of description here)\n\n
     2. Name of heading:\n description(Write the content of description here)\n\n
+    3. Name of heading:\n description(Write the content of description here)\n\n
+    4. Name of heading:\n description(Write the content of description here)
     '''
     payload = {
     "model": "gpt-3.5-turbo",
