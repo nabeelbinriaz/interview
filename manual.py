@@ -153,13 +153,15 @@ def revised_answer(ques):
 
 def purpose(ques):
     URL = "https://api.openai.com/v1/chat/completions"
-    res =''' Your response should be in object type dictionary in the given format:
+    res =''' Your response should be in the given format:
     1. heading:\n description\n\n
     2. heading:\n description\n\n
+    3. heading:\n description\n\n
+    4. heading:\n description
             '''
     payload = {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "user", "content": f"Analyze this  interview question {ques}, and provide 4 purposes for which this question is asked in an interview with proper heading\n {res}"}],
+    "messages": [{"role":"system","content":f"You are a HR professional reviewing the answers of candidates on different interview questions. {res}"},{"role": "user", "content": f"Analyze this  interview question {ques}, and provide 4 purposes for which this question is asked in an interview with proper heading\n {res}"}],
     "temperature" : 1.0,
     "top_p":1.0,
     "n" : 1,
