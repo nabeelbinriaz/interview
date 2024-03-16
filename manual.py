@@ -411,15 +411,18 @@ async def summarzie_audio_file(text: str = Form(...)):
 @app.post("/manual/")
 async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(...),history: str=Form(None)):
     ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}, Job Description: {job_description}"
+    print(history)
     print(ci)
     print("API HITT.......")
     # with open("chat.txt", "rb") as files:
     #     loaded_data = files.read().decode('utf-8')  # Decoding the binary data to string
     try:
-        mes_dict = ast.literal_eval(history)
+        cleaned_string = history[1:-1]
+        mes_dict = ast.literal_eval(cleaned_string)
+        print("success")
     except:
         mes_dict=[]
-    print(mes_dict)
+    # print(mes_dict)
     messages=messages_from_dict(mes_dict)
     retrieved_chat_history = ChatMessageHistory(messages=messages)
     template = "You are an interviewer, designed to interview the Human, based on the provided 'Candidate information'. You should ask technical questions and create hypothetical scenarios to check for skills related to the candidate's field one by one and based on the 'Chat History' and  predict what the next question should be . When the Human say 'hello', JUST respond with 'hello there, thankyou for taking your time for inteviewing with us, Please introduce yourself'\n Donot write anything else and then wait for Human answer"+f"\n\nCandidate Information:\n\n{ci}"+"\n\nChat History:\n\n{history}\n\nConversation:\nHuman: {input}\nAI:"
