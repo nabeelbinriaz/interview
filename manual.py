@@ -414,7 +414,7 @@ async def summarzie_audio_file(text: str = Form(...)):
     return output
 
 @app.post("/manual/")
-async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(...),history: str=Form(None)):
+async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(None),history: str=Form(None)):
     ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}, Job Description: {job_description}"
     print(history)
     print(ci)
