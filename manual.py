@@ -415,7 +415,10 @@ async def summarzie_audio_file(text: str = Form(...)):
 
 @app.post("/manual/")
 async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(None),history: str=Form(None)):
-    ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}, Job Description: {job_description}"
+    if job_description is None:
+        ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}"
+    else:
+        ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}, Job Description: {job_description}"
     print(history)
     print(ci)
     print("API HITT.......")
