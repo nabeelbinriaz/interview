@@ -291,7 +291,7 @@ async def upload_resume(file: UploadFile = File(None),job_title: str = Form(None
     else:
         if job_title is None and years_experience is None and description is None:
             interview_questions=general()
-            return {"questions": interview_questions}
+            return {"questions": interview_questions.split('\n')}
         else:
             try:
                 user_info = UserInfo(job_title=job_title, 
@@ -300,7 +300,7 @@ async def upload_resume(file: UploadFile = File(None),job_title: str = Form(None
                                     projects=projects
                                 )
                 interview_questions = generate_interview_questions(user_info)
-                return {"questions": interview_questions}
+                return {"questions": interview_questions.split('\n')}
             except Exception as e:
                 raise HTTPException(status_code=400, detail=str(e))
 
