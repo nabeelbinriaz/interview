@@ -414,7 +414,7 @@ async def summarzie_audio_file(text: str = Form(...)):
     return output
 
 @app.post("/manual/")
-async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = Form(...),experience: str = Form(...),job_description: str = Form(None),history: str=Form(None)):
+async def detail(text: str = Form(...),name: Optional[str] = Form(None),desired_job: Optional[str] = Form(None),experience: Optional[str] = Form(None),job_description: Optional[str] = Form(None),history: str=Form(None)):
     if job_description is None:
         ci=f"Name: {name}, Desired Job:{desired_job}, experience: {experience}"
     else:
@@ -433,7 +433,7 @@ async def detail(text: str = Form(...),name: str = Form(...),desired_job: str = 
     # print(mes_dict)
     messages=messages_from_dict(mes_dict)
     retrieved_chat_history = ChatMessageHistory(messages=messages)
-    template = "You are an interviewer, designed to interview the Human, based on the provided 'Candidate information'. You should ask technical questions and create hypothetical scenarios to check for skills related to the candidate's field one by one and based on the 'Chat History' and  predict what the next question should be . When the Human say 'hello', JUST respond with 'hello there, thankyou for taking your time for inteviewing with us, Please introduce yourself'\n Donot write anything else and then wait for Human answer"+f"\n\nCandidate Information:\n\n{ci}"+"\n\nChat History:\n\n{history}\n\nConversation:\nHuman: {input}\nAI:"
+    template = "You are an interviewer, designed to interview the Human, based on the provided 'Candidate information'. If the candidate information is missing you would ask for it one by one. You should ask technical questions related to the candidate's field one by one and based on the 'Chat History' and  predict what the next question should be . When the Human say 'hello', JUST respond with 'hello there, thankyou for taking your time for inteviewing with us, Please introduce yourself'\n Donot write anything else and then wait for Human answer"+f"\n\nCandidate Information:\n\n{ci}"+"\n\nChat History:\n\n{history}\n\nConversation:\nHuman: {input}\nAI:"
     prompt = PromptTemplate(
         input_variables=["history","input"], template=template
     )
